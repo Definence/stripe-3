@@ -10,7 +10,6 @@ const pmOptions = {
   amount: 9900,
   currency: 'USD',
   countryCode: 'US',
-  paymentMethodTypes: ['klarna'],
 }
 
 function CheckoutForm() {
