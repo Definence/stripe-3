@@ -13,14 +13,15 @@ export async function POST() {
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: '{{PRICE_ID}}',
+          price: process.env.STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],
       mode: 'payment',
+      payment_method_types: ['card', 'klarna'],
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?canceled=true`,
-    });
+    })
     return NextResponse.redirect(session.url, 303)
   } catch (err) {
     return NextResponse.json(
@@ -29,3 +30,5 @@ export async function POST() {
     )
   }
 }
+
+

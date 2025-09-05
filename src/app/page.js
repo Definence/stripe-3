@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from "next/image";
 
 export default function Home() {
@@ -14,14 +18,13 @@ export default function Home() {
         />
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
+            <a className="underline hover:no-underline" href="/external_checkout">External Checkout (Stripe Checkout)</a>
+          </li>
+          <li className="mb-2 tracking-[-.01em]">
+            <a className="underline hover:no-underline" href="/card_element_checkout">Card Element Checkout</a>
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            <a className="underline hover:no-underline" href="/payment_intent_checkout">Payment Intent Checkout</a>
           </li>
         </ol>
 

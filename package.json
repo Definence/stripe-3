@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4044 --turbopack",
+    "webhook": "stripe listen --forward-to localhost:4044/api/webhooks",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
@@ -11,9 +12,10 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^4.0.0",
     "@stripe/stripe-js": "^7.9.0",
-    "next": "15.5.2",
+    "next": "^15.5.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "stripe": "^18.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

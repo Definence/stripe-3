@@ -1,0 +1,2 @@
+import CardElementCheckoutServer from './CardElementCheckoutServer'
+export default CardElementCheckoutServer

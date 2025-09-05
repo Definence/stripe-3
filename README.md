@@ -2,23 +2,40 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Stripe Checkout is the fastest way to get started with payments. Included are some basic build and run scripts you can use to start up the application.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Development
+
+1. Build the application
+```shell
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. _Optional_: download and run the [Stripe CLI](https://stripe.com/docs/stripe-cli)
+```shell
+$ stripe listen --forward-to localhost:4044/api/webhooks
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+3. Run the application
+```shell
+$ STRIPE_WEBHOOK_SECRET=$(stripe listen --print-secret) npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Go to [localhost:4044](http://localhost:4044)
+
+### Production
+
+1. Build the application
+```shell
+$ npm install
+
+$ npm build
+```
+
+2. Run the application
+```shell
+$ npm start
+```
 
 ## Learn More
 
@@ -34,13 +51,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Environment
-
-Create a `.env.local` file in the project root with your Stripe publishable key:
-
-```bash
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_xxxx
-```
-
-Restart the dev server after adding or changing environment variables.

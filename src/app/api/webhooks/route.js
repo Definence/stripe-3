@@ -14,7 +14,6 @@ export async function POST(req) {
     )
   } catch (err) {
     const errorMessage = err.message
-    // On error, log and return the error message.
     if (err) console.log(err)
     console.log(`Error message: ${errorMessage}`)
     return NextResponse.json(
@@ -45,6 +44,7 @@ export async function POST(req) {
       )
     }
   }
-  // Return a response to acknowledge receipt of the event.
   return NextResponse.json({ message: 'Received' }, { status: 200 })
 }
+
+
