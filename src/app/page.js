@@ -23,8 +23,11 @@ export default function Home() {
           <li className="mb-2 tracking-[-.01em]">
             <a className="underline hover:no-underline" href="/card_element_checkout">Card Element Checkout</a>
           </li>
+          <li className="mb-2 tracking-[-.01em]">
+            <a className="underline hover:no-underline" href="/payment_element_checkout">Payment Element Checkout</a>
+          </li>
           <li className="tracking-[-.01em]">
-            <a className="underline hover:no-underline" href="/payment_intent_checkout">Payment Intent Checkout</a>
+            <a className="underline hover:no-underline" href="/klarna_checkout">Klarna Checkout</a>
           </li>
         </ol>
 

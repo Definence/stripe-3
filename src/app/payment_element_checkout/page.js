@@ -1,0 +1,3 @@
+import PaymentElementCheckoutServer from './PaymentElementCheckoutServer'
+
+export default PaymentElementCheckoutServer
