@@ -36,6 +36,18 @@ export default function Header() {
             >
               Klarna
             </Link>
+            <Link
+              href='/express_checkout'
+              className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
+            >
+              Express Checkout
+            </Link>
+            <Link
+              href='/delayed_charge'
+              className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
+            >
+              Delayed Charge
+            </Link>
           </nav>
         </div>
       </div>

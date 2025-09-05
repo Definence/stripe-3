@@ -15,6 +15,7 @@ export async function POST(req) {
     const intent = await stripe.paymentIntents.create({
       amount,
       currency,
+      payment_method_types: ['klarna', 'card'],
       automatic_payment_methods: { enabled: true }
     })
 

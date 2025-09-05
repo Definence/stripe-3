@@ -1,12 +1,10 @@
 "use client"
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
@@ -26,8 +24,14 @@ export default function Home() {
           <li className="mb-2 tracking-[-.01em]">
             <a className="underline hover:no-underline" href="/payment_element_checkout">Payment Element Checkout</a>
           </li>
-          <li className="tracking-[-.01em]">
+          <li className="mb-2 tracking-[-.01em]">
             <a className="underline hover:no-underline" href="/klarna_checkout">Klarna Checkout</a>
+          </li>
+          <li className="mb-2 tracking-[-.01em]">
+            <a className="underline hover:no-underline" href="/express_checkout">Express Checkout</a>
+          </li>
+          <li className="tracking-[-.01em]">
+            <a className="underline hover:no-underline" href="/delayed_charge">Delayed Charge</a>
           </li>
         </ol>
 

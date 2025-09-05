@@ -6,7 +6,7 @@ import { loadStripe } from '@stripe/stripe-js'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
-function KlarnaCheckoutForm() {
+function DelayedChargeForm() {
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,12 +33,12 @@ function KlarnaCheckoutForm() {
   }
 
   return (
-    <div className='w-full max-w-md mx-auto min-h-screen flex items-center justify-center'>
+    <div className='w-full max-w-md mx-auto flex items-center justify-center py-8'>
       <div className='w-full bg-white rounded-xl shadow p-6'>
         <div className='flex flex-col gap-4'>
           <div>
-            <h2 className='text-lg font-semibold text-gray-900'>Pay with Klarna</h2>
-            <p className='text-xs text-gray-500 mt-1'>Buy now, pay later with Klarna</p>
+            <h2 className='text-lg font-semibold text-gray-900'>Delayed Charge</h2>
+            <p className='text-xs text-gray-500 mt-1'>Authorize now, capture later</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -49,25 +49,29 @@ function KlarnaCheckoutForm() {
             <button
               type='submit'
               disabled={!stripe || isSubmitting}
-              className='w-full h-11 inline-flex items-center justify-center rounded-md bg-[#ffb3c7] hover:bg-[#ff9bb3] text-white px-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition'
+              className='w-full h-11 inline-flex items-center justify-center rounded-md bg-orange-600 hover:bg-orange-700 text-white px-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition'
             >
-              {isSubmitting ? 'Processing...' : 'Pay with Klarna'}
+              {isSubmitting ? 'Authorizing...' : 'Authorize Payment'}
             </button>
           </form>
 
           {message ? <p className='text-sm text-red-600 mt-2'>{message}</p> : null}
+
+          <div className='text-xs text-gray-500 mt-2'>
+            <p>This payment will be authorized but not captured immediately. You can capture it later from your Stripe dashboard.</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default function KlarnaCheckoutClient({ clientSecret }) {
+export default function DelayedChargeClient({ clientSecret }) {
   if (!clientSecret) return null
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <KlarnaCheckoutForm />
+      <DelayedChargeForm />
     </Elements>
   )
 }

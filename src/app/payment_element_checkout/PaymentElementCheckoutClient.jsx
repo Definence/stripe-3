@@ -7,7 +7,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 function CheckoutForm() {
   return (
-    <div className='w-full max-w-md mx-auto min-h-screen flex items-center justify-center'>
+    <div className='w-full max-w-md mx-auto flex items-center justify-center py-8'>
       <PaymentElement />
     </div>
   )

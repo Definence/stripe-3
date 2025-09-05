@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function ExternalCheckoutClient() {
   return (
-    <div className='w-full max-w-md mx-auto min-h-screen flex items-center justify-center'>
+    <div className="flex items-center justify-center w-full py-8">
       <form action='/api/checkout_sessions' method='POST'>
         <button
           type='submit'
@@ -15,4 +15,3 @@ export default function ExternalCheckoutClient() {
     </div>
   )
 }
-
