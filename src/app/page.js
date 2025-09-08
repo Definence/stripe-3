@@ -31,7 +31,7 @@ export default function Home() {
             <a className="underline hover:no-underline" href="/express_checkout">Express Checkout</a>
           </li>
           <li className="tracking-[-.01em]">
-            <a className="underline hover:no-underline" href="/delayed_charge">Delayed Charge</a>
+            <a className="underline hover:no-underline" href="/off_session_charge">Off-session Charge</a>
           </li>
         </ol>
 

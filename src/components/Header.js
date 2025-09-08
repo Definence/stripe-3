@@ -43,10 +43,10 @@ export default function Header() {
               Express Checkout
             </Link>
             <Link
-              href='/delayed_charge'
+              href='/off_session_charge'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
-              Delayed Charge
+              Off session Charge
             </Link>
           </nav>
         </div>
