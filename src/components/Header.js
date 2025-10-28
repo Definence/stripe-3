@@ -43,6 +43,12 @@ export default function Header() {
               Express Checkout
             </Link>
             <Link
+              href='/ach_checkout'
+              className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
+            >
+              ACH Payment
+            </Link>
+            <Link
               href='/off_session_charge'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
