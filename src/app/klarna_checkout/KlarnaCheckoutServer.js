@@ -25,12 +25,19 @@ import { stripe } from '../../lib/stripe'
 export default async function KlarnaCheckoutServer() {
   const amount = 1800 // in dollars
   const currency = 'usd'
+  const paymentMethodTypes = ['klarna', 'card']
 
   const intent = await stripe.paymentIntents.create({
     amount: amount * 100,
     currency,
-    payment_method_types: ['klarna', 'card'],
+    payment_method_types: paymentMethodTypes,
   })
 
-  return <KlarnaCheckoutClient clientSecret={intent.client_secret} />
+  return (
+    <KlarnaCheckoutClient
+      clientSecret={intent.client_secret}
+      amount={amount * 100}
+      currency={currency.toUpperCase()}
+    />
+  )
 }

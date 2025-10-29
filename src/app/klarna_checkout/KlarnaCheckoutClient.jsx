@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import { useState } from 'react'
+import { Elements, PaymentElement, PaymentMethodMessagingElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
-function KlarnaCheckoutForm() {
+function KlarnaCheckoutForm({ amount, currency }) {
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -72,10 +72,22 @@ function KlarnaCheckoutForm() {
               <PaymentElement id='payment-element' options={paymentElementOptions} />
             </div>
 
+            {/* Klarna Promotional Messaging */}
+            <div className='bg-gray-50 rounded-md p-3'>
+              <PaymentMethodMessagingElement
+                options={{
+                  amount,
+                  currency,
+                  paymentMethodTypes: ['klarna'],
+                  countryCode: 'US',
+                }}
+              />
+            </div>
+
             <button
               type='submit'
               disabled={!stripe || isSubmitting}
-              className='w-full h-11 inline-flex items-center justify-center rounded-md bg-[#ffb3c7] hover:bg-[#ff9bb3] text-white px-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition'
+              className='mt-4 w-full h-11 inline-flex items-center justify-center rounded-md bg-[#ffb3c7] hover:bg-[#ff9bb3] text-white px-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition'
             >
               {isSubmitting ? 'Processing...' : 'Pay with Klarna'}
             </button>
@@ -88,12 +100,12 @@ function KlarnaCheckoutForm() {
   )
 }
 
-export default function KlarnaCheckoutClient({ clientSecret }) {
+export default function KlarnaCheckoutClient({ clientSecret, amount, currency, paymentMethodTypes }) {
   if (!clientSecret) return null
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <KlarnaCheckoutForm />
+      <KlarnaCheckoutForm amount={amount} currency={currency} paymentMethodTypes={paymentMethodTypes} />
     </Elements>
   )
 }

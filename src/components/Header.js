@@ -16,7 +16,7 @@ export default function Header() {
               href='/external_checkout'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
-              External Checkout
+              External
             </Link>
             <Link
               href='/card_element_checkout'
@@ -40,19 +40,19 @@ export default function Header() {
               href='/express_checkout'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
-              Express Checkout
+              Express
             </Link>
             <Link
               href='/ach_checkout'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
-              ACH Payment
+              ACH
             </Link>
             <Link
               href='/off_session_charge'
               className='text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium'
             >
-              Off session Charge
+              Off session
             </Link>
           </nav>
         </div>
