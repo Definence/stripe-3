@@ -16,7 +16,7 @@ export async function POST(req) {
       amount,
       currency,
       payment_method_types: ['klarna', 'card'],
-      automatic_payment_methods: { enabled: true }
+      // automatic_payment_methods: { enabled: true }
     })
 
     return NextResponse.json({ clientSecret: intent.client_secret })
@@ -27,5 +27,3 @@ export async function POST(req) {
     )
   }
 }
-
-

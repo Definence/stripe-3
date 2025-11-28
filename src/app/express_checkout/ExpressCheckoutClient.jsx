@@ -13,9 +13,42 @@ function ExpressCheckoutForm() {
   const [paymentRequest, setPaymentRequest] = useState(null)
   const [canMakePayment, setCanMakePayment] = useState(false)
   const [paymentRequestStatus, setPaymentRequestStatus] = useState('checking')
+  const [clientSecret, setClientSecret] = useState(null)
+
+  // Create payment intent when component mounts
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        const response = await fetch('/api/payment_intents', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: 9900,
+            currency: 'usd',
+          }),
+        })
+
+        const data = await response.json()
+        if (data.clientSecret) {
+          setClientSecret(data.clientSecret)
+        } else {
+          setMessage(data.error || 'Failed to create payment intent')
+          setPaymentRequestStatus('error')
+        }
+      } catch (error) {
+        console.error('Error creating payment intent:', error)
+        setMessage(error.message || 'Failed to create payment intent')
+        setPaymentRequestStatus('error')
+      }
+    }
+
+    createPaymentIntent()
+  }, [])
 
   useEffect(() => {
-    if (!stripe) return
+    if (!stripe || !clientSecret) return
 
     const pr = stripe.paymentRequest({
       country: 'US',
@@ -54,15 +87,43 @@ function ExpressCheckoutForm() {
       setIsSubmitting(true)
       setMessage('')
 
-      // The payment method is already created by the Payment Request API
-      // We just need to handle it
       try {
-        console.log('paymentMethod', ev.paymentMethod)
-        setMessage(`Created PaymentMethod: ${ev.paymentMethod.id}`)
-        ev.complete('success')
+        // Confirm the payment intent with the payment method from the Payment Request API
+        const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: ev.paymentMethod.id,
+          },
+          { handleActions: true }
+        )
+
+        if (confirmError) {
+          // Show error to customer
+          ev.complete('fail')
+          setMessage(confirmError.message || 'Payment failed')
+        } else if (paymentIntent) {
+          // Payment succeeded or requires additional action
+          if (paymentIntent.status === 'succeeded') {
+            ev.complete('success')
+            setMessage(`Payment succeeded! PaymentIntent ID: ${paymentIntent.id}`)
+          } else if (paymentIntent.status === 'requires_action') {
+            // Additional action required (e.g., 3D Secure)
+            // The handleActions: true option should handle this automatically
+            // But if it doesn't, we need to wait for the next action
+            ev.complete('success')
+            setMessage('Payment requires additional authentication. Please complete the verification.')
+          } else {
+            ev.complete('success')
+            setMessage(`Payment status: ${paymentIntent.status}`)
+          }
+        } else {
+          ev.complete('success')
+          setMessage('Payment processed')
+        }
       } catch (error) {
+        console.error('Error processing payment:', error)
         ev.complete('fail')
-        setMessage(error.message || 'Unable to process payment method.')
+        setMessage(error.message || 'Unable to process payment.')
       } finally {
         setIsSubmitting(false)
       }
@@ -74,7 +135,7 @@ function ExpressCheckoutForm() {
       mounted = false
       pr.off('paymentmethod', handlePaymentMethod)
     }
-  }, [stripe])
+  }, [stripe, clientSecret])
 
   return (
     <div className='font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20'>
