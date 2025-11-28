@@ -3,7 +3,7 @@ import { stripe } from '../../../lib/stripe'
 
 export async function POST(req) {
   try {
-    const { amount, currency } = await req.json()
+    const { amount, currency, payment_method_types, automatic_payment_methods } = await req.json()
 
     if (!amount || !currency) {
       return NextResponse.json(
@@ -15,8 +15,8 @@ export async function POST(req) {
     const intent = await stripe.paymentIntents.create({
       amount,
       currency,
-      payment_method_types: ['klarna', 'card'],
-      // automatic_payment_methods: { enabled: true }
+      payment_method_types: payment_method_types,
+      automatic_payment_methods: automatic_payment_methods,
     })
 
     return NextResponse.json({ clientSecret: intent.client_secret })

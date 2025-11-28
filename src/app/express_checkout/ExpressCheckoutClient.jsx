@@ -1,51 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Elements, PaymentRequestButtonElement, useStripe } from '@stripe/react-stripe-js'
+import { Elements, PaymentRequestButtonElement, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
-function ExpressCheckoutForm() {
+function ExpressCheckoutForm({ clientSecret }) {
   const stripe = useStripe()
+  const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [paymentRequest, setPaymentRequest] = useState(null)
   const [canMakePayment, setCanMakePayment] = useState(false)
   const [paymentRequestStatus, setPaymentRequestStatus] = useState('checking')
-  const [clientSecret, setClientSecret] = useState(null)
-
-  // Create payment intent when component mounts
-  useEffect(() => {
-    const createPaymentIntent = async () => {
-      try {
-        const response = await fetch('/api/payment_intents', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: 9900,
-            currency: 'usd',
-          }),
-        })
-
-        const data = await response.json()
-        if (data.clientSecret) {
-          setClientSecret(data.clientSecret)
-        } else {
-          setMessage(data.error || 'Failed to create payment intent')
-          setPaymentRequestStatus('error')
-        }
-      } catch (error) {
-        console.error('Error creating payment intent:', error)
-        setMessage(error.message || 'Failed to create payment intent')
-        setPaymentRequestStatus('error')
-      }
-    }
-
-    createPaymentIntent()
-  }, [])
 
   useEffect(() => {
     if (!stripe || !clientSecret) return
@@ -137,8 +105,44 @@ function ExpressCheckoutForm() {
     }
   }, [stripe, clientSecret])
 
+  const handlePaymentElementSubmit = async (e) => {
+    e.preventDefault()
+    if (!stripe || !elements) return
+
+    setIsSubmitting(true)
+    setMessage('')
+
+    try {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/success`
+        }
+      })
+
+      if (error) {
+        if (error.type === 'card_error' || error.type === 'validation_error') {
+          setMessage(error.message)
+        } else {
+          setMessage('An unexpected error occurred.')
+        }
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error)
+      setMessage(error.message || 'Unable to process payment.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const paymentElementOptions = {
+    paymentMethods: {
+      googlePay: 'always',
+    },
+  }
+
   return (
-    <div className='font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20'>
+    <div className='font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-2 sm:p-2 pb-20 gap-16'>
       <main className='flex flex-col gap-[16px] row-start-2 items-center sm:items-start'>
         <h1 className='text-2xl font-semibold tracking-tight'>Express Checkout</h1>
         <div className='w-full max-w-md flex flex-col gap-4'>
@@ -193,6 +197,24 @@ function ExpressCheckoutForm() {
                 </div>
               )}
 
+              {clientSecret && (
+                <div className='flex flex-col gap-4'>
+                  <div className='text-sm text-gray-600 font-semibold mt-4'>
+                    As an alternative, use Payment Element
+                  </div>
+                  <form onSubmit={handlePaymentElementSubmit} className='flex flex-col gap-4'>
+                    <PaymentElement options={paymentElementOptions} />
+                    <button
+                      type='submit'
+                      disabled={!stripe || !elements || isSubmitting}
+                      className='mt-2 inline-flex items-center justify-center rounded-md bg-black text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+                    >
+                      {isSubmitting ? 'Processing...' : 'Pay $99.00'}
+                    </button>
+                  </form>
+                </div>
+              )}
+
               {isSubmitting && (
                 <div className='text-sm text-gray-500'>Processing payment...</div>
               )}
@@ -210,10 +232,20 @@ function ExpressCheckoutForm() {
   )
 }
 
-export default function ExpressCheckoutClient(props) {
+export default function ExpressCheckoutClient({ clientSecret, amount, currency, ...props }) {
+  if (!clientSecret) {
+    return (
+      <div className='font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20'>
+        <main className='flex flex-col gap-[16px] row-start-2 items-center sm:items-start'>
+          <div className='text-sm text-gray-500'>Loading...</div>
+        </main>
+      </div>
+    )
+  }
+
   return (
-    <Elements stripe={stripePromise}>
-      <ExpressCheckoutForm {...props} />
+    <Elements stripe={stripePromise} options={{ clientSecret }}>
+      <ExpressCheckoutForm clientSecret={clientSecret} {...props} />
     </Elements>
   )
 }
